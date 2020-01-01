@@ -1,3 +1,10 @@
-FROM alpine:edge@sha256:2e8c50cbe65693cdf3e6c3822f23ee3e07a7d92fd891d0a5ed9710aedd05ee19
+# install terraform
+FROM qmxme/curl as terraform_builder
+ARG TARGETARCH
+RUN curl -L -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.18/terraform_0.12.18_linux_$TARGETARCH.zip
+RUN cd /usr/local/bin && unzip /tmp/terraform.zip && chmod 755 /usr/local/bin/terraform
 
-RUN apk add --no-cache ansible terraform="~=0.12.18" openssh git
+FROM alpine:3.11
+RUN apk add --no-cache ansible openssh git
+# terraform
+COPY --from=terraform_builder /usr/local/bin/terraform /usr/local/bin/
