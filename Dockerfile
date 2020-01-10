@@ -5,6 +5,8 @@ RUN curl -L -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/0.12.
 RUN cd /usr/local/bin && unzip /tmp/terraform.zip && chmod 755 /usr/local/bin/terraform
 
 FROM alpine:3.11
-RUN apk add --no-cache ansible openssh git
+RUN apk add --no-cache ansible openssh git socat
 # terraform
 COPY --from=terraform_builder /usr/local/bin/terraform /usr/local/bin/
+ADD ./entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
